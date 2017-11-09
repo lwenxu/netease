@@ -45,47 +45,6 @@ curl -d "s=玫瑰色的你&limit=20&type=1&offset=0" -b "appver=1.5.2;" http://m
 
 结果：
 
-{
-    "code": 200,
-    "result": {
-        "songCount": 1,
-        "songs": [
-            {
-                "album": {
-                    "status": 1,
-                    "copyrightId": 0,
-                    "name": "\u795e\u7684\u6e38\u620f",
-                    "artist": {
-                        "alias": [],
-                        "picUrl": null,
-                        "id": 0,
-                        "name": ""
-                    },
-                    "publishTime": 1344528000000,
-                    "id": 32311,
-                    "size": 10
-                },
-                "status": 1,
-                "copyrightId": 0,
-                "name": "\u73ab\u7470\u8272\u7684\u4f60",
-                "mvid": 5102,
-                "alias": [],
-                "artists": [
-                    {
-                        "alias": [],
-                        "picUrl": null,
-                        "id": 10557,
-                        "name": "\u5f20\u60ac"
-                    }
-                ],
-                "duration": 297927,
-                "id": 326695
-            }
-        ]
-    }
-}
-
-
 
 
 3. 获取歌手专辑列表
