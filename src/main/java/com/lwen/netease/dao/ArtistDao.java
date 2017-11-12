@@ -18,12 +18,14 @@ public class ArtistDao {
         return repository.save(artist);
     }
 
-    // public List<Music> findMusicByName(String name) {
-    //     return repository.findByName(name);
-    // }
-    //
-    // public Music findMusicById(Long id) {
-    //     return repository.findById(id);
-    // }
+
+    public List<Artist> findByName(String name) {
+        return repository.findByName(name);
+    }
+
+
+    public Artist findById(Long id) {
+        return repository.findById(id);
+    }
 
 }

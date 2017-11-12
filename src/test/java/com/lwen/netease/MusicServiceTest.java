@@ -22,6 +22,7 @@ public class MusicServiceTest {
 
     @Test
     public void urlTest() throws UnsupportedEncodingException {
-        System.out.println(service.getSongUrl("6020925674045702","6020925674045702"));;
+        System.out.println(service.getSongUrl("7996748070345900"));;
+        System.out.println(service.getSongUrl("1396379773969853"));;
     }
 }

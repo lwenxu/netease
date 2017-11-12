@@ -60,16 +60,6 @@ public class MusicController {
 
 
     /**
-     * 根据歌曲 id 获取歌曲详情
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "/songDetail/id/{id}", method = RequestMethod.GET)
-    public String getSongDetailById(@PathVariable("id") String id) {
-        return musicService.getSongDetailById(id);
-    }
-
-    /**
      * 根据专辑的 id 获取专辑内的歌曲
      * @param id  专辑 id
      * @return
@@ -84,8 +74,8 @@ public class MusicController {
         return 10557;
     }
 
-    // @RequestMapping(value = "/dfs",method = RequestMethod.GET)
-    // public String getDfs() {
-    //     return musicService.getDfs();
-    // }
+    @RequestMapping(value = "/artist",method = RequestMethod.GET)
+    public String getDfs() throws IOException {
+        return musicService.parseJson();
+    }
 }

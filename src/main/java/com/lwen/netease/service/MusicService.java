@@ -6,9 +6,7 @@ import com.lwen.netease.Expection.NetException;
 import com.lwen.netease.dao.AlbumDao;
 import com.lwen.netease.dao.ArtistDao;
 import com.lwen.netease.dao.MusicDao;
-import com.lwen.netease.entity.Album;
-import com.lwen.netease.entity.Artist;
-import com.lwen.netease.entity.Music;
+import com.lwen.netease.entity.*;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -47,7 +45,7 @@ public class MusicService {
      * @return
      * @throws IOException
      */
-    public List<Music> searchByMusicName(String name, String limit, String type, String offset) throws IOException {
+    public List searchByMusicName(String name, String limit, String type, String offset) throws IOException {
         List<Music> musicList = new ArrayList<>();
         musicList = musicDao.findMusicByName(name);
         if (!musicList.isEmpty()) {
@@ -73,9 +71,22 @@ public class MusicService {
         String jsonStr = document == null ? "" : document.body().html();
         JSONObject O = (JSONObject) JSONValue.parse(jsonStr);
 
-
         //json对象解析   然后存放在数据库  并返回所查询的 music list
-        return parseJsonToMusicAndSave(O);
+        switch (type) {
+            case "1":  //单曲
+                return parseJsonToMusicAndSave(O);
+            case "10":  //专辑
+                return parseJsonToAlbumAndSave(O);
+            case "100":  //歌手
+                return parseJsonToArtistAndSave(O, name);
+            case "1000":  //歌单
+                return parseJsonToPlayListAndSave(O);
+            case "1002":  //用户
+                return parseJsonToUserAndSave(O);
+            default:
+                throw new NetException(ResultEnmu.SEARCH_ERROR.getCode(), ResultEnmu.SEARCH_ERROR.getMsg(), null);
+        }
+
     }
 
     /**
@@ -110,7 +121,7 @@ public class MusicService {
             Long musicId = Long.parseLong(jsonObjectContext.get("id").toString());
             String dfsId=getDfs(musicId+"",albumId+"");
             String musicName = jsonObjectContext.get("name").toString();
-            String musicUrl = getSongUrl(musicId + "", dfsId);
+            String musicUrl = getSongUrl(dfsId);
 
 
             Artist artist = new Artist(artistId, artistName, artistUrl);
@@ -131,13 +142,137 @@ public class MusicService {
     }
 
     /**
+     * 专辑
+     * @param O
+     * @return
+     */
+    @Transactional
+    public List<Album> parseJsonToAlbumAndSave(JSONObject O){
+        List<Album> result = new ArrayList<>();
+        return result;
+    }
+
+    /**
+     * 歌手
+     * @param O
+     * @return
+     */
+    @Transactional
+    public List<Artist> parseJsonToArtistAndSave(JSONObject O,String name){
+        List<Artist> result = new ArrayList<>();
+        result = artistDao.findByName(name);
+        if (!result.isEmpty()) {
+            return result;
+        }
+
+        int resultCount = Integer.parseInt(((JSONObject) O.get("result")).get("artistCount").toString());
+        JSONArray artistJSON = (JSONArray) ((JSONObject) O.get("result")).get("artists");
+
+        for (Object temp : artistJSON) {
+            Long artistId = Long.parseLong(((JSONObject)temp).get("id").toString());
+            String artistName = ((JSONObject)temp).get("name").toString();
+            String imgUrl = ((JSONObject)temp).get("img1v1Url").toString();
+            Artist artist = new Artist(artistId, artistName, imgUrl);
+            artistDao.saveArtist(artist);
+            result.add(artist);
+        }
+        if (!result.isEmpty()) {
+            return result;
+        }
+        return result;
+    }
+
+    public String parseJson() throws IOException {
+        //data info
+        Map<String, String> data = new HashMap<>();
+        data.put("s", "陈奕迅");
+        data.put("limit", "10");
+        data.put("type", "1000");
+        data.put("offset", "0");
+        String url = "http://music.163.com/api/search/get/";
+        //设置header cookie  data
+        Connection con = Jsoup.connect(url);
+        con.data(data);
+        // header info
+        Map<String, String> header = new HashMap<>();
+        header.put("Cookie", "appver=2.0.2");
+        con.headers(header);
+
+        //执行  post 请求
+        Document document = con.post();
+        String jsonStr = document == null ? "" : document.body().html();
+        JSONObject O = (JSONObject) JSONValue.parse(jsonStr);
+
+
+
+
+        List<PlayList> result = new ArrayList<>();
+        // result = albumDao.findByName(name);
+        // if (!result.isEmpty()) {
+        //     return result;
+        // }
+
+        JSONArray listJSON = (JSONArray) ((JSONObject) O.get("result")).get("playlists");
+        for (Object temp : listJSON) {
+            Long listId = Long.parseLong(((JSONObject)temp).get("id").toString());
+            String listName = ((JSONObject)temp).get("name").toString();
+            String username = ((JSONObject)((JSONObject)temp).get("creator")).get("nickname").toString();
+            String coverImgUrl = ((JSONObject)temp).get("coverImgUrl").toString();
+            Long playCount=Long.parseLong(((JSONObject)temp).get("playCount").toString());
+            Long trackCount=Long.parseLong(((JSONObject)temp).get("trackCount").toString());
+            Long bookCount=Long.parseLong(((JSONObject)temp).get("bookCount").toString());
+            Long userId=Long.parseLong(((JSONObject)temp).get("userId").toString());
+
+            PlayList playList = new PlayList(listId, listName, username, coverImgUrl, playCount, trackCount, bookCount, userId);
+
+            result.add(playList);
+        }
+        // if (!result.isEmpty()) {
+        //     return result;
+        // }
+        return O.toString();
+
+
+    }
+
+    /**
+     * 歌单
+     * @param O
+     * @return
+     */
+    @Transactional
+    public List<PlayList> parseJsonToPlayListAndSave(JSONObject O){
+        List<PlayList> result = new ArrayList<>();
+        return result;
+    }
+
+    /**
+     * 用户列表
+     * @param O
+     * @return
+     */
+    @Transactional
+    public List<User> parseJsonToUserAndSave(JSONObject O){
+        List<User> result = new ArrayList<>();
+        return result;
+    }
+
+
+
+
+
+
+
+
+
+
+    /**
      * 获取歌曲的 url
-     * @param id
      * @param dfsId
      * @return
      */
-    public String getSongUrl(String id,String dfsId) throws UnsupportedEncodingException {
-        return "http://p2.music.126.net/" + encryptId(id) + "/" + dfsId + ".mp3";
+    public String getSongUrl(String dfsId) throws UnsupportedEncodingException {
+        return "http://p2.music.126.net/" + encryptId(dfsId) + "/" + dfsId + ".mp3";
     }
 
     /**
@@ -146,10 +281,9 @@ public class MusicService {
      * @return
      */
     private String encryptId(String id) throws UnsupportedEncodingException {
-        int length = Integer.parseInt(id);
         byte[] codes = "3go8&$8*3*3h0k(2)2".getBytes("utf-8");
-        byte[] songId = new byte[length];
-        for (int i = 0; i < length; i++) {
+        byte[] songId = id.getBytes();
+        for (int i = 0; i < songId.length; i++) {
             songId[i] = (byte) (songId[i] ^ codes[i % codes.length]);
         }
         MessageDigest digest = null;
@@ -199,19 +333,6 @@ public class MusicService {
         return document != null ? document.body().html() : null;
     }
 
-
-    public String getSongDetailById(String id) {
-        String url = "http://music.163.com/api/song/detail/?id=" + id + "&ids=%5B" + id + "%5D";
-        Connection connection = Jsoup.connect(url);
-        connection.cookie("appver", "2.0.2");
-        Document document = null;
-        try {
-            document = connection.get();
-        } catch (IOException e) {
-            System.out.println("获取歌曲信息失败，GET 请求失败！");
-        }
-        return document != null ? document.body().html() : null;
-    }
 
     /**
      * 根据 album 获取所有的歌曲的 json 字符串
