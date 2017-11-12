@@ -49,7 +49,7 @@ curl -d "s=玫瑰色的你&limit=20&type=1&offset=0" -b "appver=1.5.2;" http://m
 
 3. 获取歌手专辑列表
 
-GET http://music.163.com/api/artist/albums/[artist_id]/
+GET `http://music.163.com/api/artist/albums/[artist_id]/`
 
 其中artist_id用歌手id替换
 

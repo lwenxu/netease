@@ -72,6 +72,8 @@ public class MusicService {
         Document document = con.post();
         String jsonStr = document == null ? "" : document.body().html();
         JSONObject O = (JSONObject) JSONValue.parse(jsonStr);
+
+
         //json对象解析   然后存放在数据库  并返回所查询的 music list
         return parseJsonToMusicAndSave(O);
     }
@@ -94,13 +96,6 @@ public class MusicService {
             String artistStr = jsonObjectContext.get("artists").toString();
             JSONObject artistJsonObject = (JSONObject) JSONValue.parse(artistStr.substring(1, artistStr.length() - 1));
 
-
-            //music 实体的属性
-            Long musicId = Long.parseLong(jsonObjectContext.get("id").toString());
-            //TODO::重要  最后从 album 取出来的
-            String dfsId="";
-            String musicName = jsonObjectContext.get("name").toString();
-            String musicUrl = getSongUrl(musicId + "", dfsId);
             //album 实体的属性
             Long albumId = Long.parseLong(albumJsonObject.get("id").toString());
             String albumName = albumJsonObject.get("name").toString();
@@ -110,6 +105,12 @@ public class MusicService {
             Long artistId = Long.parseLong(artistJsonObject.get("id").toString());
             String artistName = artistJsonObject.get("name").toString();
             String artistUrl = artistJsonObject.get("img1v1Url").toString();
+
+            //music 实体的属性
+            Long musicId = Long.parseLong(jsonObjectContext.get("id").toString());
+            String dfsId=getDfs(musicId+"",albumId+"");
+            String musicName = jsonObjectContext.get("name").toString();
+            String musicUrl = getSongUrl(musicId + "", dfsId);
 
 
             Artist artist = new Artist(artistId, artistName, artistUrl);
@@ -135,8 +136,8 @@ public class MusicService {
      * @param dfsId
      * @return
      */
-    private String getSongUrl(String id,String dfsId) throws UnsupportedEncodingException {
-        return "http://m1.music.126.net/" + encryptId(id) + "/" + dfsId + ".mp3";
+    public String getSongUrl(String id,String dfsId) throws UnsupportedEncodingException {
+        return "http://p2.music.126.net/" + encryptId(id) + "/" + dfsId + ".mp3";
     }
 
     /**
@@ -212,16 +213,61 @@ public class MusicService {
         return document != null ? document.body().html() : null;
     }
 
+    /**
+     * 根据 album 获取所有的歌曲的 json 字符串
+     * @param id
+     * @return
+     */
     public String getAlbumById(String id) {
         String url = "http://music.163.com/api/album/" + id;
         Connection connection = Jsoup.connect(url);
         connection.cookie("appver", "2.0.2");
+        connection.header("Referer", "http://music.163.com");
         Document document = null;
         try {
             document = connection.get();
         } catch (IOException e) {
             System.out.println("获取专辑失败，GET 请求失败！");
         }
-        return document != null ? document.toString() : null;
+        return document != null ? document.body().html() : null;
     }
+
+    /**
+     * 根据 album 的 json 字符串获取音乐的 dfsId
+     * @param musicId
+     * @param jsonObject
+     * @return
+     */
+    public String getDfsId(String musicId,JSONObject jsonObject) {
+        String dfsId = "";
+        if (jsonObject == null) {
+            return "";
+        }
+        JSONArray songsJson=(JSONArray) ((JSONObject)jsonObject.get("album")).get("songs");
+        for (Object tempO : songsJson) {
+            JSONObject object = (JSONObject) tempO;
+            if (object.get("id").toString().equals(musicId)) {
+                if (object.get("hMusic")!=null) {
+                    dfsId = ((JSONObject) object.get("hMusic")).get("dfsId").toString();
+                    continue;
+                }
+                if (object.get("mMusic") != null) {
+                    dfsId = ((JSONObject) object.get("mMusic")).get("dfsId").toString();
+                    continue;
+                }
+                if (object.get("lMusic") != null) {
+                    dfsId = ((JSONObject) object.get("lMusic")).get("dfsId").toString();
+                    continue;
+                }
+            }
+        }
+        return dfsId;
+    }
+
+    public String getDfs(String musicId,String albumId) {
+        JSONObject object = (JSONObject) JSONValue.parse(getAlbumById(albumId));
+        return getDfsId(musicId, object);
+    }
+
+
 }

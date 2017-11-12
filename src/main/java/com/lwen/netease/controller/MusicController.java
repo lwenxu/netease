@@ -74,7 +74,8 @@ public class MusicController {
      * @param id  专辑 id
      * @return
      */
-    public String getAlbumById(String id) {
+    @RequestMapping(value = "/album/{id}",method = RequestMethod.GET)
+    public String getAlbumById(@PathVariable("id") String id) {
         return musicService.getAlbumById(id);
     }
 
@@ -82,4 +83,9 @@ public class MusicController {
     private long getSingerIdByName(String name) {
         return 10557;
     }
+
+    // @RequestMapping(value = "/dfs",method = RequestMethod.GET)
+    // public String getDfs() {
+    //     return musicService.getDfs();
+    // }
 }
