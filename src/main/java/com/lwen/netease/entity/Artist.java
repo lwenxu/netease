@@ -7,24 +7,20 @@ import javax.persistence.*;
 public class Artist {
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
+    private Long aId;
     @Column(nullable = false)
     private String name;
-    private String picUrl;
-    private String alias;
-    private String albumSize;
-    private String picId;
     private String imgUrl;
-    private String img;
 
     public Artist() {
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -36,38 +32,6 @@ public class Artist {
         this.name = name;
     }
 
-    public String getPicUrl() {
-        return picUrl;
-    }
-
-    public void setPicUrl(String picUrl) {
-        this.picUrl = picUrl;
-    }
-
-    public String getAlias() {
-        return alias;
-    }
-
-    public void setAlias(String alias) {
-        this.alias = alias;
-    }
-
-    public String getAlbumSize() {
-        return albumSize;
-    }
-
-    public void setAlbumSize(String albumSize) {
-        this.albumSize = albumSize;
-    }
-
-    public String getPicId() {
-        return picId;
-    }
-
-    public void setPicId(String picId) {
-        this.picId = picId;
-    }
-
     public String getImgUrl() {
         return imgUrl;
     }
@@ -76,11 +40,28 @@ public class Artist {
         this.imgUrl = imgUrl;
     }
 
-    public String getImg() {
-        return img;
+
+    public Long getaId() {
+        return aId;
     }
 
-    public void setImg(String img) {
-        this.img = img;
+    public void setaId(Long aId) {
+        this.aId = aId;
+    }
+
+    public Artist(Long aId, String name, String imgUrl) {
+        this.aId = aId;
+        this.name = name;
+        this.imgUrl = imgUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "Artist{" +
+                "id=" + id +
+                ", aId=" + aId +
+                ", name='" + name + '\'' +
+                ", imgUrl='" + imgUrl + '\'' +
+                '}';
     }
 }

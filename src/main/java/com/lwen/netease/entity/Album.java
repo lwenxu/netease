@@ -9,15 +9,21 @@ public class Album {
     @Id
     @GeneratedValue
     private Long id;
+    private Long aId;
     private String name;
     @OneToOne
     @JoinColumn
     private Artist artist;
     private String publishTime;
     private Integer size;
-    private String copyrightId;
-    private Integer status;
-    private Long picId;
+
+    public Album(Long aId, String name, Artist artist, String publishTime, Integer size) {
+        this.aId = aId;
+        this.name = name;
+        this.artist = artist;
+        this.publishTime = publishTime;
+        this.size = size;
+    }
 
     public Long getId() {
         return id;
@@ -35,8 +41,6 @@ public class Album {
         this.name = name;
     }
 
-
-
     public String getPublishTime() {
         return publishTime;
     }
@@ -53,30 +57,6 @@ public class Album {
         this.size = size;
     }
 
-    public String getCopyrightId() {
-        return copyrightId;
-    }
-
-    public void setCopyrightId(String copyrightId) {
-        this.copyrightId = copyrightId;
-    }
-
-    public Integer getStatus() {
-        return status;
-    }
-
-    public void setStatus(Integer status) {
-        this.status = status;
-    }
-
-    public Long getPicId() {
-        return picId;
-    }
-
-    public void setPicId(Long picId) {
-        this.picId = picId;
-    }
-
     public Album() {
     }
 
@@ -86,5 +66,18 @@ public class Album {
 
     public void setArtist(Artist artist) {
         this.artist = artist;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Album{" +
+                "id=" + id +
+                ", aId=" + aId +
+                ", name='" + name + '\'' +
+                ", artist=" + artist +
+                ", publishTime='" + publishTime + '\'' +
+                ", size=" + size +
+                '}';
     }
 }

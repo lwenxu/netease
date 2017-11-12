@@ -18,8 +18,17 @@ public class Music {
     private Album album;
     private String dfsId;
     private String url;
-    private String singer;
     private Long times;
+
+    public Music(Long mId, String name, Artist artist, Album album, String dfsId, String url, Long times) {
+        this.mId = mId;
+        this.name = name;
+        this.artist = artist;
+        this.album = album;
+        this.dfsId = dfsId;
+        this.url = url;
+        this.times = times;
+    }
 
     public void setId(Long id) {
         this.id = id;
@@ -59,14 +68,6 @@ public class Music {
         this.url = url;
     }
 
-    public String getSinger() {
-        return singer;
-    }
-
-    public void setSinger(String singer) {
-        this.singer = singer;
-    }
-
     public Long getId() {
         return id;
     }
@@ -96,5 +97,19 @@ public class Music {
 
     public void setmId(Long mId) {
         this.mId = mId;
+    }
+
+    @Override
+    public String toString() {
+        return "Music{" +
+                "id=" + id +
+                ", mId=" + mId +
+                ", name='" + name + '\'' +
+                ", artist=" + artist +
+                ", album=" + album +
+                ", dfsId='" + dfsId + '\'' +
+                ", url='" + url + '\'' +
+                ", times=" + times +
+                '}';
     }
 }
