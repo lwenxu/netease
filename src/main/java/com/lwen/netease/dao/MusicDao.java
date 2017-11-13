@@ -17,11 +17,11 @@ public class MusicDao {
     }
 
     public List<Music> findMusicByName(String name) {
-        return repository.findByName(name);
+        return repository.findByNameLike("%"+name+"%");
     }
 
     public Music findMusicById(Long id) {
-        return repository.findById(id);
+        return repository.findByMId(id);
     }
 
 }

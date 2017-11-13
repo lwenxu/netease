@@ -74,8 +74,8 @@ public class MusicController {
         return 10557;
     }
 
-    @RequestMapping(value = "/artist",method = RequestMethod.GET)
-    public String getDfs() throws IOException {
-        return musicService.parseJson();
-    }
+    // @RequestMapping(value = "/artist",method = RequestMethod.GET)
+    // public String getDfs() throws IOException {
+    //     return musicService.parseJson();
+    // }
 }

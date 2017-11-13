@@ -6,8 +6,6 @@ import javax.persistence.*;
 @Table
 public class Music {
     @Id
-    @GeneratedValue
-    private Long id;
     private Long mId;
     private String name;
     @ManyToOne
@@ -30,9 +28,6 @@ public class Music {
         this.times = times;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public Long getTimes() {
         return times;
@@ -68,9 +63,6 @@ public class Music {
         this.url = url;
     }
 
-    public Long getId() {
-        return id;
-    }
 
     public Music() {
     }
@@ -102,7 +94,6 @@ public class Music {
     @Override
     public String toString() {
         return "Music{" +
-                "id=" + id +
                 ", mId=" + mId +
                 ", name='" + name + '\'' +
                 ", artist=" + artist +

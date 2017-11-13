@@ -1,0 +1,29 @@
+.main{
+    margin-top: 80px;
+}
+
+.search{
+    background-image: url("../img/bg.jpg");
+    height: 247px;
+    width: 1920px;
+}
+
+.search .input{
+    padding-top: 80px;
+    width: 800px;
+}
+
+.search .input input{
+    height: 60px;
+}
+
+.header-title{
+    font-size: 20px;
+}
+.header-title .navbar-brand{
+    font-size: 23px;
+}
+
+.search-type{
+    font-size: 15px;
+}

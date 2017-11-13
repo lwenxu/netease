@@ -7,8 +7,7 @@ import javax.persistence.Id;
 
 @Entity
 public class PlayList {
-    @Id @GeneratedValue
-    private Long id;
+    @Id
     private Long listId ;
     private String listName ;
     private String username ;
@@ -27,14 +26,6 @@ public class PlayList {
         this.trackCount = trackCount;
         this.bookCount = bookCount;
         this.userId = userId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public Long getListId() {

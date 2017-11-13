@@ -3,9 +3,7 @@ package com.lwen.netease.service;
 
 import com.lwen.netease.Enmu.ResultEnmu;
 import com.lwen.netease.Expection.NetException;
-import com.lwen.netease.dao.AlbumDao;
-import com.lwen.netease.dao.ArtistDao;
-import com.lwen.netease.dao.MusicDao;
+import com.lwen.netease.dao.*;
 import com.lwen.netease.entity.*;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
@@ -35,6 +33,10 @@ public class MusicService {
     private AlbumDao albumDao;
     @Autowired
     private ArtistDao artistDao;
+    @Autowired
+    private PlayListDao playListDao;
+    @Autowired
+    private UserDao userDao;
 
     /**
      * service 层的搜索音乐
@@ -74,15 +76,15 @@ public class MusicService {
         //json对象解析   然后存放在数据库  并返回所查询的 music list
         switch (type) {
             case "1":  //单曲
-                return parseJsonToMusicAndSave(O);
+                return parseJsonToMusicAndSave(O,name);
             case "10":  //专辑
-                return parseJsonToAlbumAndSave(O);
+                return parseJsonToAlbumAndSave(O,name);
             case "100":  //歌手
                 return parseJsonToArtistAndSave(O, name);
             case "1000":  //歌单
-                return parseJsonToPlayListAndSave(O);
+                return parseJsonToPlayListAndSave(O,name);
             case "1002":  //用户
-                return parseJsonToUserAndSave(O);
+                return parseJsonToUserAndSave(O,name);
             default:
                 throw new NetException(ResultEnmu.SEARCH_ERROR.getCode(), ResultEnmu.SEARCH_ERROR.getMsg(), null);
         }
@@ -90,13 +92,19 @@ public class MusicService {
     }
 
     /**
-     * 把 json 转成 music 对象  并且存储
+     * 歌曲
      * @param O
      * @return
      */
     @Transactional
-    public List<Music> parseJsonToMusicAndSave(JSONObject O) throws UnsupportedEncodingException {
-        List<Music> musicList = new ArrayList<>();
+    public List<Music> parseJsonToMusicAndSave(JSONObject O,String name) throws UnsupportedEncodingException {
+        List<Music> musicList;
+        List<Music> temp=musicDao.findMusicByName(name);
+        musicList =  temp.isEmpty() ?  new ArrayList<>() : temp;
+        if (!temp.isEmpty()) {
+            return musicList;
+        }
+
         JSONArray jsonArray = (JSONArray) ((JSONObject) (O.get("result"))).get("songs");
         for (Object tempObject : jsonArray) {
             // //正文的 JSONObject 对象
@@ -147,8 +155,31 @@ public class MusicService {
      * @return
      */
     @Transactional
-    public List<Album> parseJsonToAlbumAndSave(JSONObject O){
-        List<Album> result = new ArrayList<>();
+    public List<Album> parseJsonToAlbumAndSave(JSONObject O,String name){
+        List<Album> result;
+        result = albumDao.findByName(name);
+        if (!result.isEmpty()) {
+            return result;
+        }
+
+        JSONArray listJSON = (JSONArray) ((JSONObject) O.get("result")).get("albums");
+        for (Object temp : listJSON) {
+            Long aId=Long.parseLong(((JSONObject)temp).get("id").toString());
+            String albumName=((JSONObject)temp).get("name").toString();
+            Artist artist=artistDao.findById(Long.parseLong(((JSONObject)((JSONObject)temp).get("artist")).get("id").toString()));
+            if (artist == null) {
+                Long artistId = Long.parseLong(((JSONObject)((JSONObject)temp).get("artist")).get("id").toString());
+                String artistName = ((JSONObject)((JSONObject)temp).get("artist")).get("name").toString();
+                String imgUrl = ((JSONObject)((JSONObject)temp).get("artist")).get("img1v1Url").toString();
+                artist = new Artist(artistId, artistName, imgUrl);
+                artistDao.saveArtist(artist);
+            }
+            String publishTime=((JSONObject)temp).get("publishTime").toString();
+            Integer size=Integer.parseInt(((JSONObject)temp).get("size").toString());
+            Album album = new Album(aId, albumName, artist, publishTime, size);
+            albumDao.saveAlbum(album);
+            result.add(album);
+        }
         return result;
     }
 
@@ -159,7 +190,7 @@ public class MusicService {
      */
     @Transactional
     public List<Artist> parseJsonToArtistAndSave(JSONObject O,String name){
-        List<Artist> result = new ArrayList<>();
+        List<Artist> result;
         result = artistDao.findByName(name);
         if (!result.isEmpty()) {
             return result;
@@ -182,35 +213,72 @@ public class MusicService {
         return result;
     }
 
-    public String parseJson() throws IOException {
-        //data info
-        Map<String, String> data = new HashMap<>();
-        data.put("s", "陈奕迅");
-        data.put("limit", "10");
-        data.put("type", "1000");
-        data.put("offset", "0");
-        String url = "http://music.163.com/api/search/get/";
-        //设置header cookie  data
-        Connection con = Jsoup.connect(url);
-        con.data(data);
-        // header info
-        Map<String, String> header = new HashMap<>();
-        header.put("Cookie", "appver=2.0.2");
-        con.headers(header);
+    // public String parseJson() throws IOException {
+    //     //data info
+    //     Map<String, String> data = new HashMap<>();
+    //     data.put("s", "夜雁桐");
+    //     data.put("limit", "10");
+    //     data.put("type", "1002");
+    //     data.put("offset", "0");
+    //     String url = "http://music.163.com/api/search/get/";
+    //     //设置header cookie  data
+    //     Connection con = Jsoup.connect(url);
+    //     con.data(data);
+    //     // header info
+    //     Map<String, String> header = new HashMap<>();
+    //     header.put("Cookie", "appver=2.0.2");
+    //     con.headers(header);
+    //
+    //     //执行  post 请求
+    //     Document document = con.post();
+    //     String jsonStr = document == null ? "" : document.body().html();
+    //     JSONObject O = (JSONObject) JSONValue.parse(jsonStr);
+    //
+    //
+    //
+    //
+    //     List<User> result;
+    //     // result = albumDao.findByName(name);
+    //     // if (!result.isEmpty()) {
+    //     //     return result;
+    //     // }
+    //
+    //     JSONArray listJSON = (JSONArray) ((JSONObject) O.get("result")).get("userprofiles");
+    //     for (Object temp : listJSON) {
+    //         Long userId=Long.parseLong(((JSONObject)temp).get("userId").toString());
+    //         String birthday=((JSONObject)temp).get("birthday").toString();
+    //         String detailDescription=((JSONObject)temp).get("detailDescription").toString();
+    //         String backgroundUrl=((JSONObject)temp).get("backgroundUrl").toString();
+    //         Integer gender = Integer.parseInt(((JSONObject) temp).get("gender").toString());
+    //         String signature=((JSONObject)temp).get("signature").toString();
+    //         String description=((JSONObject)temp).get("description").toString();
+    //         String nickname=((JSONObject)temp).get("nickname").toString();
+    //         String avatarUrl=((JSONObject)temp).get("avatarUrl").toString();
+    //
+    //         User user = new User(birthday,detailDescription,backgroundUrl,gender,signature,description,nickname,avatarUrl,userId);
+    //         userDao.saveUser(user);
+    //         result.add(user);
+    //     }
+    //     // if (!result.isEmpty()) {
+    //     //     return result;
+    //     // }
+    //     return O.toString();
+    //
+    //
+    // }
 
-        //执行  post 请求
-        Document document = con.post();
-        String jsonStr = document == null ? "" : document.body().html();
-        JSONObject O = (JSONObject) JSONValue.parse(jsonStr);
-
-
-
-
-        List<PlayList> result = new ArrayList<>();
-        // result = albumDao.findByName(name);
-        // if (!result.isEmpty()) {
-        //     return result;
-        // }
+    /**
+     * 歌单
+     * @param O
+     * @return
+     */
+    @Transactional
+    public List<PlayList> parseJsonToPlayListAndSave(JSONObject O,String name){
+        List<PlayList> result;
+        result = playListDao.findByName(name);
+        if (!result.isEmpty()) {
+            return result;
+        }
 
         JSONArray listJSON = (JSONArray) ((JSONObject) O.get("result")).get("playlists");
         for (Object temp : listJSON) {
@@ -224,25 +292,9 @@ public class MusicService {
             Long userId=Long.parseLong(((JSONObject)temp).get("userId").toString());
 
             PlayList playList = new PlayList(listId, listName, username, coverImgUrl, playCount, trackCount, bookCount, userId);
-
+            playListDao.savePlayList(playList);
             result.add(playList);
         }
-        // if (!result.isEmpty()) {
-        //     return result;
-        // }
-        return O.toString();
-
-
-    }
-
-    /**
-     * 歌单
-     * @param O
-     * @return
-     */
-    @Transactional
-    public List<PlayList> parseJsonToPlayListAndSave(JSONObject O){
-        List<PlayList> result = new ArrayList<>();
         return result;
     }
 
@@ -252,19 +304,32 @@ public class MusicService {
      * @return
      */
     @Transactional
-    public List<User> parseJsonToUserAndSave(JSONObject O){
-        List<User> result = new ArrayList<>();
+    public List<User> parseJsonToUserAndSave(JSONObject O,String name){
+        List<User> result;
+        List<User> tep = userDao.findUserByName(name);
+        result =  tep.isEmpty() ?  new ArrayList<>() : tep;
+        if (!tep.isEmpty()) {
+            return result;
+        }
+
+        JSONArray listJSON = (JSONArray) ((JSONObject) O.get("result")).get("userprofiles");
+        for (Object temp : listJSON) {
+            Long userId=Long.parseLong(((JSONObject)temp).get("userId").toString());
+            String birthday=((JSONObject)temp).get("birthday").toString();
+            String detailDescription=((JSONObject)temp).get("detailDescription").toString();
+            String backgroundUrl=((JSONObject)temp).get("backgroundUrl").toString();
+            Integer gender = Integer.parseInt(((JSONObject) temp).get("gender").toString());
+            String signature=((JSONObject)temp).get("signature").toString();
+            String description=((JSONObject)temp).get("description").toString();
+            String nickname=((JSONObject)temp).get("nickname").toString();
+            String avatarUrl=((JSONObject)temp).get("avatarUrl").toString();
+
+            User user = new User(birthday,detailDescription,backgroundUrl,gender,signature,description,nickname,avatarUrl,userId);
+            userDao.saveUser(user);
+            result.add(user);
+        }
         return result;
     }
-
-
-
-
-
-
-
-
-
 
     /**
      * 获取歌曲的 url

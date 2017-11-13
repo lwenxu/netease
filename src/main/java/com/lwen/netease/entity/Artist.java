@@ -1,14 +1,16 @@
 package com.lwen.netease.entity;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 
 @Entity
 @Table
 public class Artist {
     @Id
-    @GeneratedValue
+    @NotFound(action= NotFoundAction.IGNORE)
     private Long id;
-    private Long aId;
     @Column(nullable = false)
     private String name;
     private String imgUrl;
@@ -16,13 +18,6 @@ public class Artist {
     public Artist() {
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -42,15 +37,15 @@ public class Artist {
 
 
     public Long getaId() {
-        return aId;
+        return id;
     }
 
     public void setaId(Long aId) {
-        this.aId = aId;
+        this.id = aId;
     }
 
     public Artist(Long aId, String name, String imgUrl) {
-        this.aId = aId;
+        this.id = aId;
         this.name = name;
         this.imgUrl = imgUrl;
     }
@@ -58,8 +53,7 @@ public class Artist {
     @Override
     public String toString() {
         return "Artist{" +
-                "id=" + id +
-                ", aId=" + aId +
+                ", aId=" + id +
                 ", name='" + name + '\'' +
                 ", imgUrl='" + imgUrl + '\'' +
                 '}';

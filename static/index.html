@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <script src="./js/jquery-3.2.1.min.js"></script>
+    <script src="./js/bootstrap.min.js"></script>
+    <script src="./js/vue2.5.3.js"></script>
+    <script src="./js/vue-resource.js"></script>
+</head>
+<body>
+<div class="container-fluid" id="app">
+    <!--首部导航-->
+    <div class="row">
+        <nav class="navbar navbar-default navbar-fixed-top">
+            <div class="container header-title">
+                <div style="margin-top: 14px"></div>
+                <a class="navbar-brand" href="#">网易云爬虫</a>
+                <ul class="nav navbar-nav" style="height: 65px;">
+                    <li class="">
+                        <a href="#">首页</a>
+                    </li>
+                    <li>
+                        <a href="#">网易云音乐</a>
+                    </li>
+                    <li>
+                        <a href="#">数据分析</a>
+                    </li>
+                    <li>
+                        <a href="#">关于我们</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <!--搜索框-->
+    <div class="row main">
+        <div class="search">
+
+            <div class="container input">
+                <div class="input-group-lg">
+                    <input type="text" class=" pull-left form-control" aria-label="...">
+                </div><!-- /input-group -->
+            </div>
+        </div>
+    </div>
+    <!--搜索分类-->
+    <div class="row">
+        <div class="container">
+            <div class="navbar ">
+                <ul class="nav navbar-nav search-type">
+                    <li class="active">
+                        <a href="#">单曲</a>
+                    </li>
+                    <li>
+                        <a href="#">专辑</a>
+                    </li>
+                    <li>
+                        <a href="#">歌手</a>
+                    </li>
+                    <li>
+                        <a href="#">歌单</a>
+                    </li>
+                    <li>
+                        <a href="#">用户</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="container">
+            <table class="table table-list">
+                <thead>
+                    <tr class="text-muted">
+                        <td>歌曲</td>
+                        <td>歌手</td>
+                        <td>专辑</td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in musics">
+                        <td>{{item.name}}</td>
+                        <td>{{item.artist.name}}</td>
+                        <td>{{item.album.name}}</td>
+                        <td>
+                            <a title="播放" href=""><span class="glyphicon glyphicon-play"></span></a>&nbsp;&nbsp;&nbsp;
+                            <a title="添加到播放列表" href=""><span class="glyphicon glyphicon-plus"></span></a>&nbsp;&nbsp;&nbsp;
+                            <a title="下载歌曲" :href='item.url'><span class="glyphicon glyphicon-download-alt"></span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button class="btn btn-danger" v-on:click="searchMusicByName()"></button>
+        </div>
+    </div>
+</div>
+<script src="./js/main.js"></script>
+</body>
+</html>

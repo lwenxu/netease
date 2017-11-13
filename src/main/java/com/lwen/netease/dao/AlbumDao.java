@@ -18,6 +18,10 @@ public class AlbumDao {
         return repository.save(album);
     }
 
+    public List<Album> findByName(String name) {
+        return repository.findByNameLike("%"+name+"%");
+    }
+
     // public List<Album> findMusicByName(String name) {
     //     return repository.findByName(name);
     // }

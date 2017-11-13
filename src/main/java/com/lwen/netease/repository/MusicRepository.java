@@ -6,8 +6,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface MusicRepository extends JpaRepository<Music,Long>{
-    public List<Music> findByName(String name);
+     List<Music> findByNameLike(String name);
 
-    public Music findById(Long id);
+     Music findByMId(Long id);
 
 }

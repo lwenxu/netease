@@ -7,8 +7,6 @@ import javax.persistence.*;
 @Table
 public class Album {
     @Id
-    @GeneratedValue
-    private Long id;
     private Long aId;
     private String name;
     @OneToOne
@@ -23,14 +21,6 @@ public class Album {
         this.artist = artist;
         this.publishTime = publishTime;
         this.size = size;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -72,7 +62,6 @@ public class Album {
     @Override
     public String toString() {
         return "Album{" +
-                "id=" + id +
                 ", aId=" + aId +
                 ", name='" + name + '\'' +
                 ", artist=" + artist +

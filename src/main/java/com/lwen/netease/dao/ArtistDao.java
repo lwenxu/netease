@@ -20,7 +20,7 @@ public class ArtistDao {
 
 
     public List<Artist> findByName(String name) {
-        return repository.findByName(name);
+        return repository.findByNameLike("%"+name+"%");
     }
 
 
