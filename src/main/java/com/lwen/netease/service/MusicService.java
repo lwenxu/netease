@@ -106,6 +106,9 @@ public class MusicService {
         }
 
         JSONArray jsonArray = (JSONArray) ((JSONObject) (O.get("result"))).get("songs");
+        if (jsonArray == null) {
+            return musicList;
+        }
         for (Object tempObject : jsonArray) {
             // //正文的 JSONObject 对象
             JSONObject jsonObjectContext = (JSONObject) tempObject;
@@ -163,6 +166,9 @@ public class MusicService {
         }
 
         JSONArray listJSON = (JSONArray) ((JSONObject) O.get("result")).get("albums");
+        if (listJSON == null) {
+            return result;
+        }
         for (Object temp : listJSON) {
             Long aId=Long.parseLong(((JSONObject)temp).get("id").toString());
             String albumName=((JSONObject)temp).get("name").toString();
@@ -198,6 +204,9 @@ public class MusicService {
 
         int resultCount = Integer.parseInt(((JSONObject) O.get("result")).get("artistCount").toString());
         JSONArray artistJSON = (JSONArray) ((JSONObject) O.get("result")).get("artists");
+        if (artistJSON == null) {
+            return result;
+        }
 
         for (Object temp : artistJSON) {
             Long artistId = Long.parseLong(((JSONObject)temp).get("id").toString());
@@ -281,6 +290,9 @@ public class MusicService {
         }
 
         JSONArray listJSON = (JSONArray) ((JSONObject) O.get("result")).get("playlists");
+        if (listJSON == null) {
+            return result;
+        }
         for (Object temp : listJSON) {
             Long listId = Long.parseLong(((JSONObject)temp).get("id").toString());
             String listName = ((JSONObject)temp).get("name").toString();
@@ -313,6 +325,9 @@ public class MusicService {
         }
 
         JSONArray listJSON = (JSONArray) ((JSONObject) O.get("result")).get("userprofiles");
+        if (listJSON == null) {
+            return result;
+        }
         for (Object temp : listJSON) {
             Long userId=Long.parseLong(((JSONObject)temp).get("userId").toString());
             String birthday=((JSONObject)temp).get("birthday").toString();

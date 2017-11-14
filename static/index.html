@@ -45,7 +45,8 @@
 
             <div class="container input">
                 <div class="input-group-lg">
-                    <input type="text" class=" pull-left form-control" aria-label="...">
+                    <input v-model="searchContent" type="text" class=" pull-left form-control" aria-label="..." v-on:keyup.enter="searchMusic()">
+                    <i class="glyphicon glyphicon-search search-icon"  v-on:click="searchMusic()"></i>
                 </div><!-- /input-group -->
             </div>
         </div>
@@ -56,19 +57,19 @@
             <div class="navbar ">
                 <ul class="nav navbar-nav search-type">
                     <li class="active">
-                        <a href="#">单曲</a>
+                        <a href="#" @click="searchSingle()">单曲</a>
                     </li>
                     <li>
-                        <a href="#">专辑</a>
+                        <a href="#" @click="searchAlbum()">专辑</a>
                     </li>
                     <li>
-                        <a href="#">歌手</a>
+                        <a href="#" @click="searchSinger()">歌手</a>
                     </li>
                     <li>
-                        <a href="#">歌单</a>
+                        <a href="#" @click="searchPlayList()">歌单</a>
                     </li>
                     <li>
-                        <a href="#">用户</a>
+                        <a href="#" @click="searchUser()">用户</a>
                     </li>
                 </ul>
             </div>
@@ -76,7 +77,8 @@
     </div>
     <div class="row ">
         <div class="container">
-            <table class="table table-list">
+            <!--单曲列表-->
+            <table class="table table-list" v-if="searchType==1">
                 <thead>
                     <tr class="text-muted">
                         <td>歌曲</td>
@@ -98,7 +100,66 @@
                     </tr>
                 </tbody>
             </table>
-            <button class="btn btn-danger" v-on:click="searchMusicByName()"></button>
+
+            <!--专辑列表-->
+            <table class="table table-list" v-if="searchType==10">
+                <thead>
+                    <tr class="text-muted">
+                        <td>专辑</td>
+                        <td>歌手</td>
+                        <td>发布时间</td>
+                        <td>大小</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in albums">
+                        <td>{{item.name}}</td>
+                        <td>{{item.artist.name}}</td>
+                        <td>{{item.publishTime|formatDate}}</td>
+                        <td>{{item.size}}</td>
+                        <td>
+                            <a title="播放" href=""><span class="glyphicon glyphicon-play"></span></a>&nbsp;&nbsp;&nbsp;
+                            <a title="添加到播放列表" href=""><span class="glyphicon glyphicon-plus"></span></a>&nbsp;&nbsp;&nbsp;
+                            <a title="下载歌曲" :href='item.url'><span class="glyphicon glyphicon-download-alt"></span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!--歌手-->
+            <div class="singer" v-if="searchType==100">
+                <div v-for="item in singers" class="">
+                    <img :src="item.imgUrl" :alt="item.name">
+                    <a class="text-center singer-name">{{item.name}}</a>
+                </div>
+            </div>
+
+            <!--歌单-->
+            <table class="table table-list" v-if="searchType==1000">
+                <thead>
+                <tr class="text-muted">
+                    <td>歌单</td>
+                    <td>用户</td>
+                    <td>播放量</td>
+                    <td>收藏次数</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="item in playLists">
+                    <td><img :src="item.coverImgUrl" height="100px" width="100px" alt="">{{item.listName}}</td>
+                    <td>{{item.username}}</td>
+                    <td>{{item.playCount}}</td>
+                    <td>{{item.trackCount}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <!--用户-->
+            <div class="singer" v-if="searchType==1002">
+                <div v-for="item in users" class="">
+                    <img :src="item.avatarUrl" :alt="item.name">
+                    <a class="text-center singer-name">{{item.nickname}}</a>
+                </div>
+            </div>
         </div>
     </div>
 </div>

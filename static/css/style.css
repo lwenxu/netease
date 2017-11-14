@@ -27,3 +27,31 @@
 .search-type{
     font-size: 15px;
 }
+
+.input-group-lg .search-icon{
+    font-size: 27px;
+    position: relative;
+    top: -39px;
+    right: -720px;
+    cursor: pointer;
+}
+
+.singer{
+    width: 130px;
+    height: 130px;
+    display: block;
+}
+
+.singer img{
+    width: 130px;
+    height: 120px;
+    display: block;
+}
+
+.singer-name{
+    padding-top: 5px;
+    text-align: center;
+    cursor: pointer;
+    /*position: relative;*/
+    /*top: 90px;*/
+}
