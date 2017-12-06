@@ -25,4 +25,7 @@ nbdist/
 
 ### config file
 src/main/resources/application.yml
+/src/main/resources/rebel.xml
+/src/main/resources/rebel-remote.xml
 
+/src/main/java/com/lwen/netease/API.md
