@@ -7,7 +7,10 @@ var app=new Vue({
         playLists:{},
         users:{},
         searchContent:"",
-        searchType:1
+        searchType:1,
+        music:{
+            url:""
+        }
     },
     methods:{
        searchMusic:function () {
@@ -57,6 +60,13 @@ var app=new Vue({
         searchUser:function () {
             this.searchType = 1002;
             this.searchMusic();
+        },
+        playMusic:function (url) {
+            console.log(url);
+            this.music.url = url;
+            console.log(this.music.url);
+
+
         }
     },
     filters:{

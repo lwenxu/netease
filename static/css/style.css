@@ -5,7 +5,7 @@
 .search{
     background-image: url("../img/bg.jpg");
     height: 247px;
-    width: 1920px;
+    width: auto;
 }
 
 .search .input{
@@ -44,6 +44,7 @@
 
 .singer img{
     width: 130px;
+    /*width: auto;*/
     height: 120px;
     display: block;
 }
@@ -55,3 +56,4 @@
     /*position: relative;*/
     /*top: 90px;*/
 }
+

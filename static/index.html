@@ -8,11 +8,18 @@
     <title>Document</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
     <link rel="stylesheet" href="./css/bootstrap-theme.min.css">
+    <!--<link rel="stylesheet" href="./css/player.css">-->
+    <link rel="stylesheet" href="./css/mediaelementplayer.min.css
+">
+
     <link rel="stylesheet" href="./css/style.css">
     <script src="./js/jquery-3.2.1.min.js"></script>
     <script src="./js/bootstrap.min.js"></script>
     <script src="./js/vue2.5.3.js"></script>
     <script src="./js/vue-resource.js"></script>
+    <script src="./js/mediaelement-and-player.min.js"></script>
+    <script src="./js/mediaelement.min.js"></script>
+    <script src="./js/mediaelementplayer.min.js"></script>
 </head>
 <body>
 <div class="container-fluid" id="app">
@@ -75,6 +82,7 @@
             </div>
         </div>
     </div>
+    <!--内容显示页面-->
     <div class="row ">
         <div class="container">
             <!--单曲列表-->
@@ -93,7 +101,7 @@
                         <td>{{item.artist.name}}</td>
                         <td>{{item.album.name}}</td>
                         <td>
-                            <a title="播放" href=""><span class="glyphicon glyphicon-play"></span></a>&nbsp;&nbsp;&nbsp;
+                            <a title="播放" @click="playMusic(item.url)"><span class="glyphicon glyphicon-play"></span></a>&nbsp;&nbsp;&nbsp;
                             <a title="添加到播放列表" href=""><span class="glyphicon glyphicon-plus"></span></a>&nbsp;&nbsp;&nbsp;
                             <a title="下载歌曲" :href='item.url'><span class="glyphicon glyphicon-download-alt"></span></a>
                         </td>
@@ -159,6 +167,25 @@
                     <img :src="item.avatarUrl" :alt="item.name">
                     <a class="text-center singer-name">{{item.nickname}}</a>
                 </div>
+            </div>
+        </div>
+    </div>
+    <!--播放器栏目-->
+    <div class="row">
+        <div class="container">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+                <!--<div id="mep_0" class="mejs-container svg mejs-audio" tabindex="0" role="application" aria-label="Audio Player" style="width: 100%; height: 30px;"><div class="mejs-inner"><div class="mejs-mediaelement">-->
+                <center>
+                    <audio :src='music.url' controls="controls" type="audio/mp3" width="100%"></audio>
+                </center>
+                <!--</div><div class="mejs-layers"><div class="mejs-poster mejs-layer" style="display: none; width: 100%; height: 30px;"></div></div><div class="mejs-controls"><div class="mejs-button mejs-playpause-button mejs-play"><button type="button" aria-controls="mep_0" title="Play" aria-label="Play"></button></div><div class="mejs-time mejs-currenttime-container" role="timer" aria-live="off"><span class="mejs-currenttime">00:00</span></div><div class="mejs-time-rail" style="width: 537px;"><span class="mejs-time-total mejs-time-slider" style="width: 527px;" aria-label="Time Slider" aria-valuemin="0" aria-valuemax="NaN" aria-valuenow="0" aria-valuetext="00:00" role="slider" tabindex="0"><span class="mejs-time-buffering" style="display: none;"></span><span class="mejs-time-loaded" style="width: 527px;"></span><span class="mejs-time-current" style="width: 0px;"></span><span class="mejs-time-handle" style="left: -5px;"></span><span class="mejs-time-float"><span class="mejs-time-float-current">00:00</span><span class="mejs-time-float-corner"></span></span></span></div><div class="mejs-time mejs-duration-container"><span class="mejs-duration">04:00</span></div><div class="mejs-button mejs-volume-button mejs-mute"><button type="button" aria-controls="mep_0" title="Mute" aria-label="Mute"></button></div><a href="javascript:void(0);" class="mejs-horizontal-volume-slider mejs-mute" aria-label="Volume Slider" aria-valuemin="0" aria-valuemax="100" aria-valuenow="80" aria-valuetext="80%" role="slider" tabindex="0"><span class="mejs-offscreen">Use Up/Down Arrow keys to increase or decrease volume.</span><div class="mejs-horizontal-volume-total"></div><div class="mejs-horizontal-volume-current" style="width: 40px;"></div><div class="mejs-horizontal-volume-handle" style="left: 27px;"></div></a></div><div class="mejs-clear"></div></div></div>-->
+
+
+                <!--<center>-->
+                <!--<audio :src='music.url' type="audio/mp3" controls="controls" width="500px"></audio>-->
+                <!--</center>-->
+
             </div>
         </div>
     </div>
