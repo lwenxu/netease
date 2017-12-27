@@ -22,3 +22,10 @@
 4. 使用 maven 对项目进行编译，会产生一个快照版本的 jar 包
 5. 使用 java -jar projectName.jar 运行项目
 6. 在浏览器中访问 127.0.0.1:port 即可
+
+# 运行截图
+![](http://ojrw3x8j2.bkt.clouddn.com/17-12-27/94575171.jpg)
+
+![](http://ojrw3x8j2.bkt.clouddn.com/17-12-27/14223840.jpg)
+
+![](http://ojrw3x8j2.bkt.clouddn.com/17-12-27/99468218.jpg)
